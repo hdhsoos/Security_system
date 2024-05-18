@@ -25,17 +25,55 @@ def add_new_sec(login, password):
         except:
             text_elem.update("Произошла ошибка.")
 
+def delete_worker(id):
+    search = workers.search_id(id)
+    text_elem = window['-delresult-']
+    if search == []:
+        text_elem.update("id не существует.")
+    else:
+        try:
+            workers.delete(id)
+            text_elem.update("Сотрудник удалён.")
+        except:
+            text_elem.update("Произошла ошибка.")
+
+def del_worker_menu():
+    global window
+
+    window.close()
+    layout = [[sg.Text('Введите id сотрудника', pad=((0, 0), (0, 0)))],
+              [sg.Text('id: '), sg.InputText(size=(16, 1))],
+              [sg.Button('Delete', pad=((118, 0), (0, 0))), sg.Button('Back')],
+              [sg.Text('', key='-delresult-')]]
+    window = sg.Window('Удалить сотрудника', layout, location=(300, 0), finalize=True,
+                       size=(325, 150))
+
+def add_new_worker(login, password):
+    search = workers.search(login)
+    text_elem = window['-workresult-']
+    if search != []:
+        text_elem.update("ФИО уже существует.")
+    else:
+        try:
+            workers.insert(login, password, '0')
+            text_elem.update("Сотрудник добавлен.")
+        except:
+            text_elem.update("Произошла ошибка.")
+
 
 def open_workers_list():
     global window
 
     window.close()
     A = workers.view()
-    column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((265, 0), (10, 0)))]]
-    column2 = [[sg.Button('My third Button!')], [sg.Button('My third Button!')], [sg.Button('My third Button!')], [sg.Button('My third Button!')]]
-
+    column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((215, 0), (10, 0)))]]
+    column2 = [[sg.Button('Показать все', size=(17, 2), pad=((23, 0), (20, 18)))],
+               [sg.Button('Найти сотрудника', size=(17, 2), pad=((23, 0), (20, 20)))],
+               [sg.Button('Добавить сотрудника', size=(17, 2), pad=((23, 0), (20, 20)))],
+               [sg.Button('Изменить информацию', size=(17, 2), pad=((23, 0), (20, 20)))],
+               [sg.Button('Удалить сотрудника', size=(17, 2), pad=((23, 0), (20, 20)))], ]
     layout = [[sg.Column(column1), sg.Column(column2)]]
-    window = sg.Window('Список сотрудников', layout, location=(300, 0), size=(600, 420))
+    window = sg.Window('Список сотрудников', layout, location=(300, 0), size=(500, 420))
 
 
 def open_log():
@@ -45,6 +83,45 @@ def open_log():
     layout = [[sg.Text('Здесь будет журнал')], [sg.Button('Back', pad=((205, 0), (30, 0)))]]
     window = sg.Window('Журнал', layout, location=(300, 0), finalize=True,
                        size=(480, 400))
+
+def find_worker(fio):
+    global window
+
+    window.close()
+    A = workers.search(fio)
+    column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((215, 0), (10, 0)))]]
+    column2 = [[sg.Button('Показать все', size=(17, 2), pad=((23, 0), (20, 30)))],
+               [sg.Button('Найти сотрудника', size=(17, 2), pad=((23, 0), (20, 30)))],
+               [sg.Button('Добавить сотрудника', size=(17, 2), pad=((23, 0), (20, 30)))],
+               [sg.Button('Обновить информацию', size=(17, 2), pad=((23, 0), (20, 30)))],
+               [sg.Button('Удалить сотрудника', size=(17, 2), pad=((23, 0), (20, 30)))], ]
+    layout = [[sg.Column(column1), sg.Column(column2)]]
+    window = sg.Window('Список сотрудников', layout, location=(300, 0), size=(500, 420))
+
+
+def find_worker_menu():
+    global window
+
+    window.close()
+    layout = [[sg.Text('Введите фио сотрудника', pad=((0, 0), (0, 0)))],
+              [sg.Text('ФИО: '), sg.InputText(size=(16, 1))],
+              [sg.Button('Find', pad=((118, 0), (0, 0))), sg.Button('Back ')],
+              [sg.Text('', key='-findworkresult-')]]
+    window = sg.Window('Найти сотрудника', layout, location=(300, 0), finalize=True,
+                       size=(325, 150))
+
+
+def adding_worker_menu():
+    global window
+
+    window.close()
+    layout = [[sg.Text('Введите фио и кабинеты для нового сотрудника', pad=((0, 0), (0, 0)))],
+              [sg.Text('ФИО:                          '), sg.InputText(size=(16, 1))],
+              [sg.Text('Номера через пробел: '), sg.InputText(size=(16, 1))],
+              [sg.Button('Add ', pad=((118, 0), (0, 0))), sg.Button('Back ')],
+              [sg.Text('', key='-workresult-')]]
+    window = sg.Window('Добавить сотрудника', layout, location=(300, 0), finalize=True,
+                       size=(325, 150))
 
 
 def open_sec_list():
@@ -60,21 +137,34 @@ def open_sec_list():
                        size=(325, 130))
 
 
+def rooms(number):
+    global window
+
+    window.close()
+    A = workers.search_second(number)
+    column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((110, 0), (10, 0)))]]
+    layout = [[sg.Column(column1)]]
+    window = sg.Window('Комната {}'.format(number), layout, location=(300, 0), size=(300, 420))
+
+
 def open_main_wind():
     global window
 
     window.close()
     column1 = [[sg.Text('Карта', pad=((133, 0), (8, 8)))],
-              [sg.Button('Кабинет 1', size=(10, 5), pad=((5, 10), (0, 0))),
-               sg.Button('Кабинет 2', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 3', size=(10, 5))
-               ],
-              [sg.Button('Кабинет 4', size=(10, 5), pad=((5, 10), (0, 0))),
-               sg.Button('Кабинет 5', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 6', size=(10, 5))
-               ],
-              [sg.Button('Кабинет 7', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 8', size=(10, 5),
-                                                                                      pad=((5, 10), (0, 0))), sg.Button(
-                  'Кабинет 9', size=(10, 5))], [sg.Button('Cancel', pad=((205, 0), (30, 0)))]]
-    column2 = [[sg.Button('Сотрудники', size=(15, 2), pad=((27, 0), (20, 0)))], [sg.Button('Открыть журнал', size=(15, 2), pad=((27, 0), (20, 0)))], [sg.Button('Добавить нового охранника', size=(15, 2), pad=((27, 0), (20, 0)))]]
+               [sg.Button('Кабинет 1', size=(10, 5), pad=((5, 10), (0, 0))),
+                sg.Button('Кабинет 2', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 3', size=(10, 5))
+                ],
+               [sg.Button('Кабинет 4', size=(10, 5), pad=((5, 10), (0, 0))),
+                sg.Button('Кабинет 5', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 6', size=(10, 5))
+                ],
+               [sg.Button('Кабинет 7', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 8', size=(10, 5),
+                                                                                       pad=((5, 10), (0, 0))),
+                sg.Button(
+                    'Кабинет 9', size=(10, 5))], [sg.Button('Cancel', pad=((200, 0), (30, 0)))]]
+    column2 = [[sg.Button('Сотрудники', size=(17, 2), pad=((23, 0), (20, 0)))],
+               [sg.Button('Открыть журнал', size=(17, 2), pad=((23, 0), (20, 0)))],
+               [sg.Button('Добавить нового охранника', size=(17, 2), pad=((23, 0), (20, 0)))]]
     layout = [[sg.Column(column1), sg.Column(column2)]]
     window = sg.Window('Security program', layout, location=(300, 0), finalize=True,
                        size=(480, 400))
@@ -90,16 +180,57 @@ layout = [[sg.Text('Введите логин и пароль', pad=((0, 0), (4,
 
 # Create the Window
 window = sg.Window('Введите логин', layout, location=(300, 0), finalize=True, element_justification="center",
-                   size=(300, 130))
+                   size=(300, 160))
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
     event, values = window.read()
-    if event == sg.WIN_CLOSED or event == 'Cancel': break  # if user closes window or clicks cancel
-    if event == 'Ok': wrong_update(values[0], values[1])
-    if event == 'Add': add_new_sec(values[0], values[1])
-    if event == 'Сотрудники': open_workers_list()
-    if event == 'Back': open_main_wind()
-    if event == 'Открыть журнал': open_log()
-    if event == 'Добавить нового охранника': open_sec_list()
+    if event == sg.WIN_CLOSED or event == 'Cancel':
+        break  # if user closes window or clicks cancel
+    elif event == 'Ok':
+        wrong_update(values[0], values[1])
+    elif event == 'Add':
+        add_new_sec(values[0], values[1])
+    elif event == 'Find':
+        find_worker(values[0])
+    elif event == 'Add ':
+        add_new_worker(values[0], values[1])
+    elif event == 'Сотрудники':
+        open_workers_list()
+    elif event == 'Back':
+        open_main_wind()
+    elif event == 'Back ':
+        open_workers_list()
+    elif event == 'Открыть журнал':
+        open_log()
+    elif event == 'Добавить нового охранника':
+        open_sec_list()
+    elif event == 'Найти сотрудника':
+        find_worker_menu()
+    elif event == 'Добавить сотрудника':
+        adding_worker_menu()
+    elif event == 'Показать все':
+        open_workers_list()
+    elif event == 'Кабинет 1':
+        rooms('1')
+    elif event == 'Кабинет 2':
+        rooms('2')
+    elif event == 'Кабинет 3':
+        rooms('3')
+    elif event == 'Кабинет 4':
+        rooms('4')
+    elif event == 'Кабинет 5':
+        rooms('5')
+    elif event == 'Кабинет 6':
+        rooms('6')
+    elif event == 'Кабинет 7':
+        rooms('7')
+    elif event == 'Кабинет 8':
+        rooms('8')
+    elif event == 'Кабинет 9':
+        rooms('9')
+    elif event == 'Удалить сотрудника':
+        del_worker_menu()
+    elif event == 'Delete':
+        delete_worker(values[0])
 
 window.close()

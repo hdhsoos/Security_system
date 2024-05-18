@@ -117,6 +117,20 @@ class WorkersDB:
         rows = self.cur.fetchall()
         return rows
 
+    def search_id(self, id=""):
+        # формируем запрос на поиск по точному совпадению
+        self.cur.execute("SELECT * FROM workers WHERE id=?", (id,))
+        # формируем полученные строки и возвращаем их как ответ
+        rows = self.cur.fetchall()
+        return rows
+
+    def search_second(self, cur_place=""):
+        # формируем запрос на поиск по точному совпадению
+        self.cur.execute("SELECT * FROM workers WHERE cur_place=?", (cur_place,))
+        # формируем полученные строки и возвращаем их как ответ
+        rows = self.cur.fetchall()
+        return rows
+
 # создаём новый экземпляр базы данных на основе класса
 passwords = LoginsDB()
 #passwords.insert('a', 'a')
