@@ -10,7 +10,7 @@ class LoginsDB:
         self.cur = self.conn.cursor()
         # если нужной нам таблицы в базе нет — создаём её
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, login TEXT, password TEXT, comment TEXT)")
+            "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, login TEXT, password TEXT)")
         # сохраняем сделанные изменения в базе
         self.conn.commit()
 
@@ -31,9 +31,9 @@ class LoginsDB:
         return rows
 
     # добавляем новую запись
-    def insert(self, login, password, comment):
+    def insert(self, login, password):
         # формируем запрос с добавлением новой записи в БД
-        self.cur.execute("INSERT INTO users VALUES (NULL,?,?,?)", (login, password, comment,))
+        self.cur.execute("INSERT INTO users VALUES (NULL,?,?)", (login, password,))
         # сохраняем изменения
         self.conn.commit()
 
