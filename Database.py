@@ -68,7 +68,7 @@ class WorkersDB:
         self.cur = self.conn.cursor()
         # если нужной нам таблицы в базе нет — создаём её
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS workers (id INTEGER PRIMARY KEY, fio TEXT, cabinets TEXT)") # '1 3 4 5' - массив цифр
+            "CREATE TABLE IF NOT EXISTS workers (id INTEGER PRIMARY KEY, fio TEXT, cabinets TEXT, cur_place TEXT)") # '1 3 4 5' - массив цифр
         # сохраняем сделанные изменения в базе
         self.conn.commit()
 
@@ -89,16 +89,16 @@ class WorkersDB:
         return rows
 
     # добавляем новую запись
-    def insert(self, fio, cabinets):
+    def insert(self, fio, cabinets, cur_place):
         # формируем запрос с добавлением новой записи в БД
-        self.cur.execute("INSERT INTO workers VALUES (NULL,?,?,?)", (fio, cabinets,))
+        self.cur.execute("INSERT INTO workers VALUES (NULL,?,?,?)", (fio, cabinets, cur_place,))
         # сохраняем изменения
         self.conn.commit()
 
     # обновляем информацию о покупке
     def update(self, id, fio, cabinets):
         # формируем запрос на обновление записи в БД
-        self.cur.execute("UPDATE workers SET fio=?, cabinets=? WHERE id=?", (fio, cabinets, id,))
+        self.cur.execute("UPDATE workers SET fio=?, cabinets=?, cur_place=? WHERE id=?", (fio, cabinets, cur_place, id,))
         # сохраняем изменения
         self.conn.commit()
 
@@ -119,4 +119,9 @@ class WorkersDB:
 
 # создаём новый экземпляр базы данных на основе класса
 passwords = LoginsDB()
+#passwords.insert('a', 'a')
 workers = WorkersDB()
+#workers.insert('Смирнова Майя Ильинична', '1 3 5', '2')
+#workers.insert('Лебедева Полина Петровна', '1 2 6', '1')
+#workers.insert('Царев Макар Ильич', '6 7 8 9', '6')
+#workers.insert('Семенов Кирилл Алексеевич', '5 6 7 8', '5')

@@ -12,6 +12,7 @@ def wrong_update(login, password):
     elif search[0][2] == password:
         open_main_wind()
 
+
 def add_new_sec(login, password):
     search = passwords.search(login)
     text_elem = window['-secresult-']
@@ -23,26 +24,31 @@ def add_new_sec(login, password):
             text_elem.update("Охранник добавлен.")
         except:
             text_elem.update("Произошла ошибка.")
+
+
 def open_workers_list():
-    global layout, window
+    global window
 
     window.close()
-    layout = [[sg.Text('Здесь будет список работников, добавление, удаление')],
-              [sg.Button('Back', pad=((205, 0), (30, 0)))]]
-    window = sg.Window('Список сотрудников', layout, location=(300, 0), finalize=True,
-                       size=(480, 400))
+    A = workers.view()
+    column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((265, 0), (10, 0)))]]
+    column2 = [[sg.Button('My third Button!')], [sg.Button('My third Button!')], [sg.Button('My third Button!')], [sg.Button('My third Button!')]]
+
+    layout = [[sg.Column(column1), sg.Column(column2)]]
+    window = sg.Window('Список сотрудников', layout, location=(300, 0), size=(600, 420))
 
 
 def open_log():
-    global layout, window
+    global window
 
     window.close()
     layout = [[sg.Text('Здесь будет журнал')], [sg.Button('Back', pad=((205, 0), (30, 0)))]]
     window = sg.Window('Журнал', layout, location=(300, 0), finalize=True,
                        size=(480, 400))
 
+
 def open_sec_list():
-    global layout, window
+    global window
 
     window.close()
     layout = [[sg.Text('Введите логин и пароль для нового охранника', pad=((0, 0), (0, 0)))],
@@ -53,22 +59,23 @@ def open_sec_list():
     window = sg.Window('Добавить охранника', layout, location=(300, 0), finalize=True,
                        size=(325, 130))
 
+
 def open_main_wind():
-    global layout, window
+    global window
 
     window.close()
-    layout = [[sg.Text('Карта', pad=((133, 0), (8, 8)))],
+    column1 = [[sg.Text('Карта', pad=((133, 0), (8, 8)))],
               [sg.Button('Кабинет 1', size=(10, 5), pad=((5, 10), (0, 0))),
-               sg.Button('Кабинет 2', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 3', size=(10, 5)),
-               sg.Button('Сотрудники', size=(15, 2), pad=((27, 0), (0, 0)))],
+               sg.Button('Кабинет 2', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 3', size=(10, 5))
+               ],
               [sg.Button('Кабинет 4', size=(10, 5), pad=((5, 10), (0, 0))),
-               sg.Button('Кабинет 5', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 6', size=(10, 5)),
-               sg.Button('Открыть журнал', size=(15, 2), pad=((27, 0), (0, 0)))],
+               sg.Button('Кабинет 5', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 6', size=(10, 5))
+               ],
               [sg.Button('Кабинет 7', size=(10, 5), pad=((5, 10), (0, 0))), sg.Button('Кабинет 8', size=(10, 5),
                                                                                       pad=((5, 10), (0, 0))), sg.Button(
-                  'Кабинет 9', size=(10, 5)),
-               sg.Button('Добавить нового охранника', size=(15, 2), pad=((27, 0), (0, 0)))],
-              [sg.Button('Cancel', pad=((205, 0), (30, 0)))]]
+                  'Кабинет 9', size=(10, 5))], [sg.Button('Cancel', pad=((205, 0), (30, 0)))]]
+    column2 = [[sg.Button('Сотрудники', size=(15, 2), pad=((27, 0), (20, 0)))], [sg.Button('Открыть журнал', size=(15, 2), pad=((27, 0), (20, 0)))], [sg.Button('Добавить нового охранника', size=(15, 2), pad=((27, 0), (20, 0)))]]
+    layout = [[sg.Column(column1), sg.Column(column2)]]
     window = sg.Window('Security program', layout, location=(300, 0), finalize=True,
                        size=(480, 400))
     # , sg.Button('Добавить нового сотрудника', size=(15, 2), pad=((160, 0), (6, 0)))]
