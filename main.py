@@ -1,7 +1,8 @@
 import PySimpleGUI as sg
-#from Database import *
+# from Database import *
 import time
 import sqlite3
+
 
 # создаём класс для работы с базой данных
 class LoginsDB:
@@ -62,6 +63,7 @@ class LoginsDB:
         rows = self.cur.fetchall()
         return rows
 
+
 class WorkersDB:
     # конструктор класса
     def __init__(self):
@@ -71,7 +73,7 @@ class WorkersDB:
         self.cur = self.conn.cursor()
         # если нужной нам таблицы в базе нет — создаём её
         self.cur.execute(
-            "CREATE TABLE IF NOT EXISTS workers (id INTEGER PRIMARY KEY, fio TEXT, cabinets TEXT, cur_place TEXT)") # '1 3 4 5' - массив цифр
+            "CREATE TABLE IF NOT EXISTS workers (id INTEGER PRIMARY KEY, fio TEXT, cabinets TEXT, cur_place TEXT)")  # '1 3 4 5' - массив цифр
         # сохраняем сделанные изменения в базе
         self.conn.commit()
 
@@ -101,7 +103,8 @@ class WorkersDB:
     # обновляем информацию о покупке
     def update(self, id, fio, cabinets, cur_place):
         # формируем запрос на обновление записи в БД
-        self.cur.execute("UPDATE workers SET fio=?, cabinets=?, cur_place=? WHERE id=?", (fio, cabinets, cur_place, id,))
+        self.cur.execute("UPDATE workers SET fio=?, cabinets=?, cur_place=? WHERE id=?",
+                         (fio, cabinets, cur_place, id,))
         # сохраняем изменения
         self.conn.commit()
 
@@ -134,6 +137,7 @@ class WorkersDB:
         rows = self.cur.fetchall()
         return rows
 
+
 # создаём новый экземпляр базы данных на основе класса
 passwords = LoginsDB()
 if passwords.search('a') == []:
@@ -147,6 +151,7 @@ if workers.search('Царев Макар Ильич') == []:
     workers.insert('Царев Макар Ильич', '6 7 8 9', '6')
 if workers.search('Семенов Кирилл Алексеевич') == []:
     workers.insert('Семенов Кирилл Алексеевич', '5 6 7 8', '5')
+
 
 def wrong_update(login, password):
     text_elem = window['-result-']  # получаем доступ к текстовому элементу
@@ -302,6 +307,9 @@ def update_worker(id, fio, kabinets, cur_place):
                 else:
                     if cur_place not in search[0][2] and cur_place != '0':
                         text_elem.update("У сотрудника нет доступа в этот кабинет.")
+                        f = open('log.txt', 'a')
+                        x = time.ctime(time.time())
+                        f.write('{} Сотрудник {} пытался попасть \nв кабинет {}.\n'.format(x, fio, cur_place))
                     else:
                         workers.update(id, fio, kabinets, cur_place)
                         x = time.ctime(time.time())
@@ -372,7 +380,8 @@ def rooms(number):
         for e in el: x += str(e) + ' - '
         x = x[:-3]
         A.append(x)
-    column1 = [[sg.Text('id    fio    доступные кабинеты    текущее место')], [sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((128, 0), (8, 0)))]]
+    column1 = [[sg.Text('id    fio    доступные кабинеты    текущее место')],
+               [sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((128, 0), (8, 0)))]]
     layout = [[sg.Column(column1)]]
     window = sg.Window('Комната {}'.format(number), layout, location=(300, 0), size=(340, 440))
 
