@@ -68,7 +68,12 @@ def open_workers_list():
     global window
 
     window.close()
-    A = workers.view()
+    A = []
+    for el in workers.view():
+        x = ''
+        for e in el: x += str(e) + ' - '
+        x = x[:-3]
+        A.append(x)
     column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)), key='listbox')],
                [sg.Button('Back', pad=((215, 0), (10, 0)))]]
     column2 = [[sg.Button('Показать все', size=(17, 2), pad=((23, 0), (20, 18)))],
@@ -77,7 +82,7 @@ def open_workers_list():
                [sg.Button('Изменить информацию', size=(17, 2), pad=((23, 0), (20, 20)))],
                [sg.Button('Удалить сотрудника', size=(17, 2), pad=((23, 0), (20, 20)))]]
     layout = [[sg.Column(column1), sg.Column(column2)]]
-    window = sg.Window('Список сотрудников', layout, location=(300, 0), size=(500, 420))
+    window = sg.Window('Список сотрудников', layout, location=(310, 0), size=(500, 420))
 
 
 def open_log():
@@ -93,7 +98,12 @@ def find_worker(fio):
     global window
 
     window.close()
-    A = workers.search(fio)
+    A = []
+    for el in workers.search(fio):
+        x = ''
+        for e in el: x += str(e) + ' - '
+        x = x[:-3]
+        A.append(x)
     column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)), key='listbox')],
                [sg.Button('Back', pad=((215, 0), (10, 0)))]]
     column2 = [[sg.Button('Показать все', size=(17, 2), pad=((23, 0), (20, 30)))],
@@ -202,10 +212,15 @@ def rooms(number):
     global window
 
     window.close()
-    A = workers.search_second(number)
-    column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((110, 0), (10, 0)))]]
+    A = []
+    for el in workers.search_second(number):
+        x = ''
+        for e in el: x += str(e) + ' - '
+        x = x[:-3]
+        A.append(x)
+    column1 = [[sg.Text('id    fio    доступные кабинеты    текущее место')], [sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((128, 0), (8, 0)))]]
     layout = [[sg.Column(column1)]]
-    window = sg.Window('Комната {}'.format(number), layout, location=(300, 0), size=(300, 420))
+    window = sg.Window('Комната {}'.format(number), layout, location=(300, 0), size=(340, 440))
 
 
 def open_main_wind():
@@ -271,7 +286,13 @@ while True:
     elif event == 'Добавить сотрудника':
         adding_worker_menu()
     elif event == 'Показать все':
-        window['listbox'].update(workers.view())
+        A = []
+        for el in workers.view():
+            x = ''
+            for e in el: x += str(e) + ' - '
+            x = x[:-3]
+            A.append(x)
+        window['listbox'].update(A)
     elif event == 'Кабинет 1':
         rooms('1')
     elif event == 'Кабинет 2':
