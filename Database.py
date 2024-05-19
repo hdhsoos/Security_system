@@ -96,7 +96,7 @@ class WorkersDB:
         self.conn.commit()
 
     # обновляем информацию о покупке
-    def update(self, id, fio, cabinets):
+    def update(self, id, fio, cabinets, cur_place):
         # формируем запрос на обновление записи в БД
         self.cur.execute("UPDATE workers SET fio=?, cabinets=?, cur_place=? WHERE id=?", (fio, cabinets, cur_place, id,))
         # сохраняем изменения

@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 from Database import *
-
+import time
 
 def wrong_update(login, password):
     text_elem = window['-result-']  # получаем доступ к текстовому элементу
@@ -25,6 +25,7 @@ def add_new_sec(login, password):
         except:
             text_elem.update("Произошла ошибка.")
 
+
 def delete_worker(id):
     search = workers.search_id(id)
     text_elem = window['-delresult-']
@@ -37,16 +38,18 @@ def delete_worker(id):
         except:
             text_elem.update("Произошла ошибка.")
 
+
 def del_worker_menu():
     global window
 
     window.close()
     layout = [[sg.Text('Введите id сотрудника', pad=((0, 0), (0, 0)))],
               [sg.Text('id: '), sg.InputText(size=(16, 1))],
-              [sg.Button('Delete', pad=((118, 0), (0, 0))), sg.Button('Back')],
+              [sg.Button('Delete', pad=((118, 0), (0, 0))), sg.Button('Back ')],
               [sg.Text('', key='-delresult-')]]
     window = sg.Window('Удалить сотрудника', layout, location=(300, 0), finalize=True,
                        size=(325, 150))
+
 
 def add_new_worker(login, password):
     search = workers.search(login)
@@ -66,12 +69,13 @@ def open_workers_list():
 
     window.close()
     A = workers.view()
-    column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((215, 0), (10, 0)))]]
+    column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)), key='listbox')],
+               [sg.Button('Back', pad=((215, 0), (10, 0)))]]
     column2 = [[sg.Button('Показать все', size=(17, 2), pad=((23, 0), (20, 18)))],
                [sg.Button('Найти сотрудника', size=(17, 2), pad=((23, 0), (20, 20)))],
                [sg.Button('Добавить сотрудника', size=(17, 2), pad=((23, 0), (20, 20)))],
                [sg.Button('Изменить информацию', size=(17, 2), pad=((23, 0), (20, 20)))],
-               [sg.Button('Удалить сотрудника', size=(17, 2), pad=((23, 0), (20, 20)))], ]
+               [sg.Button('Удалить сотрудника', size=(17, 2), pad=((23, 0), (20, 20)))]]
     layout = [[sg.Column(column1), sg.Column(column2)]]
     window = sg.Window('Список сотрудников', layout, location=(300, 0), size=(500, 420))
 
@@ -84,12 +88,14 @@ def open_log():
     window = sg.Window('Журнал', layout, location=(300, 0), finalize=True,
                        size=(480, 400))
 
+
 def find_worker(fio):
     global window
 
     window.close()
     A = workers.search(fio)
-    column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)))], [sg.Button('Back', pad=((215, 0), (10, 0)))]]
+    column1 = [[sg.Listbox(A, size=(40, 20), pad=((2, 0), (10, 10)), key='listbox')],
+               [sg.Button('Back', pad=((215, 0), (10, 0)))]]
     column2 = [[sg.Button('Показать все', size=(17, 2), pad=((23, 0), (20, 30)))],
                [sg.Button('Найти сотрудника', size=(17, 2), pad=((23, 0), (20, 30)))],
                [sg.Button('Добавить сотрудника', size=(17, 2), pad=((23, 0), (20, 30)))],
@@ -109,6 +115,61 @@ def find_worker_menu():
               [sg.Text('', key='-findworkresult-')]]
     window = sg.Window('Найти сотрудника', layout, location=(300, 0), finalize=True,
                        size=(325, 150))
+
+
+def update_worker(id, fio, kabinets, cur_place):
+    search = workers.search_id(id)
+    text_elem = window['-updatebutton-']
+    if search == []:
+        text_elem.update("id не существует.")
+    else:
+        if len(cur_place) > 1:
+            text_elem.update("Введите одну цифру для текущего кабинета.")
+        else:
+            try:
+                if fio == '':
+                    fio = search[0][1]
+                if kabinets == '':
+                    kabinets = search[0][2]
+                if cur_place == '':
+                    cur_place = search[0][3]
+                    workers.update(id, fio, kabinets, cur_place)
+                    text_elem.update("Сотрудник обновлён.")
+                else:
+                    if cur_place not in search[0][2] and cur_place != '0':
+                        text_elem.update("У сотрудника нет доступа в этот кабинет.")
+                    else:
+                        workers.update(id, fio, kabinets, cur_place)
+                        x = time.ctime(time.time())
+                        f = open('log.txt', 'a')
+                        if search[0][3] == '0':
+                            f.write('{} Сотрудник {} зашёл в офис.\n'.format(x, fio))
+                        else:
+                            f.write('{} Сотрудник {} покинул кабинет {}.\n'.format(x, fio, search[0][3]))
+                        if cur_place == '0':
+                            f.write('{} Сотрудник {} покинул офис.\n'.format(x, fio))
+                        else:
+                            f.write('{} Сотрудник {} зашёл в кабинет {}.\n'.format(x, fio, cur_place))
+                        f.close()
+                        text_elem.update("Сотрудник обновлён.")
+
+            except:
+                text_elem.update("Произошла ошибка.")
+
+
+def update_worker_menu():
+    global window
+
+    window.close()
+    layout = [[sg.Text('Введите id, фио, доступные и текущий\nкабинеты для обновления.', pad=((0, 0), (0, 0)))],
+              [sg.Text('id: (обязательно)'), sg.InputText(size=(16, 1))],
+              [sg.Text('ФИО: (необязательно)           '), sg.InputText(size=(16, 1))],
+              [sg.Text('Номера через пробел: (необязательно)'), sg.InputText(size=(16, 1))],
+              [sg.Text('Текущее местоположение: (необязательно)'), sg.InputText(size=(16, 1))],
+              [sg.Button('Update', pad=((118, 0), (0, 0))), sg.Button('Back ')],
+              [sg.Text('', key='-updatebutton-')]]
+    window = sg.Window('Обновить информацию', layout, location=(300, 0), finalize=True,
+                       size=(375, 215))
 
 
 def adding_worker_menu():
@@ -183,6 +244,7 @@ window = sg.Window('Введите логин', layout, location=(300, 0), final
                    size=(300, 160))
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
+    global A
     event, values = window.read()
     if event == sg.WIN_CLOSED or event == 'Cancel':
         break  # if user closes window or clicks cancel
@@ -209,7 +271,7 @@ while True:
     elif event == 'Добавить сотрудника':
         adding_worker_menu()
     elif event == 'Показать все':
-        open_workers_list()
+        window['listbox'].update(workers.view())
     elif event == 'Кабинет 1':
         rooms('1')
     elif event == 'Кабинет 2':
@@ -232,5 +294,9 @@ while True:
         del_worker_menu()
     elif event == 'Delete':
         delete_worker(values[0])
+    elif event == 'Изменить информацию':
+        update_worker_menu()
+    elif event == 'Update':
+        update_worker(values[0], values[1], values[2], values[3])
 
 window.close()
