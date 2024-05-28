@@ -309,7 +309,9 @@ def update_worker(id, fio, kabinets, cur_place):
                         text_elem.update("У сотрудника нет доступа в этот кабинет.")
                         f = open('log.txt', 'a')
                         x = time.ctime(time.time())
+                        f.write('{} Сотрудник {} покинул кабинет {}.\n'.format(x, fio, search[0][3]))
                         f.write('{} Сотрудник {} пытался попасть \nв кабинет {}.\n'.format(x, fio, cur_place))
+                        f.write('{} Сотрудник {} зашёл в кабинет {}.\n'.format(x, fio, search[0][3]))
                     else:
                         workers.update(id, fio, kabinets, cur_place)
                         x = time.ctime(time.time())
